@@ -166,6 +166,9 @@ return [
         'images'                 => 'تصاویر',
         'variation_values' => 'ویژگی‌ متغییر',
         'delivery_amount' => 'هزینه ارسال',
+        'type' => 'نوع',
+        'priority' => 'اولویت',
+        'banner_image' => 'تصویر بنر',
 
     ],
 
