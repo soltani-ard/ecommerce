@@ -27,7 +27,7 @@
                 <a href="{{route('admin.banners.create')}}">
                     <button class="btn btn-sm btn-outline-primary">
                         <i class='bx bx-plus me-1'></i>
-                        ثبت بنر  جدید
+                        ثبت بنر جدید
                     </button>
                 </a>
             </div>
@@ -36,14 +36,30 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>نام بنر </th>
+                        <th>عنوان</th>
+                        <th>تصویر</th>
+                        <th>متن</th>
+                        <th>اولویت</th>
+                        <th>وضعیت</th>
+                        <th>نوع</th>
+                        <th>متن دکمه</th>
+                        <th>لینک دکمه</th>
+                        <th>آیکون دکمه</th>
                         <th>عملیات</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         <th>#</th>
-                        <th>نام بنر </th>
+                        <th>عنوان</th>
+                        <th>تصویر</th>
+                        <th>متن</th>
+                        <th>اولویت</th>
+                        <th>وضعیت</th>
+                        <th>نوع</th>
+                        <th>متن دکمه</th>
+                        <th>لینک دکمه</th>
+                        <th>آیکون دکمه</th>
                         <th>عملیات</th>
                     </tr>
                     </tfoot>
@@ -52,21 +68,62 @@
                     @foreach($banners as $key => $banner)
                         <tr>
                             <td>{{$banners->firstItem() + $key}}</td>
-                            <td>{{$banner->name}}</td>
+                            <td>{{$banner->title}}</td>
                             <td>
-                                <a href="{{route('admin.banners.show', ['banner' => $banner->id])}}"
+                                <!-- Button trigger modal -->
+                                <button class="btn btn-sm btn-link" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#modal_{{$banner->id}}"><i class='bx bx-image me-1'></i>نمایش
+                                    تصویر
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal_{{$banner->id}}" tabindex="-1" role="dialog"
+                                     aria-labelledby="modal_{{$banner->id}}_Label" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modal_{{$banner->id}}_Label">تصویر
+                                                    بنر {{$banner->title}}</h5>
+                                                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                        aria-label="بستن"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <img src="{{url(env('BANNER_IMAGES_PATH').$banner->image) }}" alt=""
+                                                     style="width: 100%">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-danger" type="button" data-bs-dismiss="modal">
+                                                    بستن
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{$banner->text}}</td>
+                            <td>{{$banner->priority}}</td>
+                            <td>
+                                <div
+                                    class="badge  {{$banner->getRawOriginal('is_active') ? 'bg-success' : 'bg-danger'}} text-white rounded-pill">
+                                    {{$banner->is_active }}
+                                </div>
+                            </td>
+                            <td>{{$banner->type}}</td>
+                            <td>{{$banner->button_text}}</td>
+                            <td>{{$banner->button_link}}</td>
+                            <td>{{$banner->button_icon}}</td>
+                            <td>
+                                <a href="{{route('admin.banners.edit', ['banner' => $banner->id])}}"
                                    style="text-decoration: none">
-                                    <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i
-                                            class="bx bx-show"></i></button>
-                                </a>
-                                <a href="{{route('admin.banners.edit', ['banner' => $banner->id])}}" style="text-decoration: none">
-                                    <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i
+                                    <button class="btn btn-datatable btn-icon btn-info me-2"><i
                                             class="bx bx-pencil"></i></button>
                                 </a>
-                                <form action="{{ route('admin.banners.destroy', ['banner' => $banner->id]) }}" method="POST"  id="delete-form-{{ $banner->id }}" style="display: inline;">
+                                <form action="{{ route('admin.banners.destroy', ['banner' => $banner->id]) }}"
+                                      method="POST" id="delete-form-{{ $banner->id }}" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn btn-datatable btn-icon btn-transparent-dark" onclick="confirmDelete({{ $banner->id }},'{{ $banner->name }}')">
+                                    <button type="button" class="btn btn-datatable btn-icon btn-danger"
+                                            onclick="confirmDelete({{ $banner->id }},'{{ $banner->title }}')">
                                         <i class="bx bx-trash"></i>
                                     </button>
                                 </form>
