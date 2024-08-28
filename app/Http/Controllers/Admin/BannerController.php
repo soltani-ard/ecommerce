@@ -88,9 +88,43 @@ class BannerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Banner $banner)
+    public function update(Request $request, Banner $banner): RedirectResponse
     {
-        dd($request->all());
+        // validation
+        $request->validate([
+            'type' => 'required',
+            'priority' => 'required|integer',
+            'banner_image' => 'nullable|mimes:jpg,jpeg,png',
+        ]);
+        try {
+            DB::beginTransaction();
+
+            if($request->has('banner_image')) {
+                // generate image name
+                $fileNameImage = generateFileName($request->banner_image);
+                $request->banner_image->move(public_path(env('BANNER_IMAGES_PATH')), $fileNameImage);
+            }
+
+            // store
+            $banner->update([
+                'image' => $request->has('banner_image') ? $fileNameImage : $banner->image,
+                'title' => $request->title,
+                'text' => $request->text,
+                'priority' => $request->priority,
+                'is_active' => $request->is_active,
+                'type' => $request->type,
+                'button_text' => $request->button_text,
+                'button_link' => $request->button_link,
+                'button_icon' => $request->button_icon,
+            ]);
+
+            DB::commit();
+        } catch (Exception $e) {
+            // rollback the transaction
+            DB::rollBack();
+            return redirect()->route('admin.banners.index')->with('error', "ویرایش بنر <strong>$request->name</strong> با خطا مواجه شد.");
+        }
+        return redirect()->route('admin.banners.index')->with('success', "بنر <strong>$request->name</strong> با موفقیت ویرایش گردید.");
     }
 
     /**
